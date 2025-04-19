@@ -1,12 +1,18 @@
 package com.mystore.app.service;
 
-import com.mystore.app.entity.Product;
-import com.mystore.app.repositories.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import com.mystore.app.entity.Product;
+import com.mystore.app.repositories.ProductRepository;
+
 
 @Service
 public class ProductService {
@@ -22,9 +28,15 @@ public class ProductService {
         return product;
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Page<Product> getAllProducts(int page, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort); //  This is valid
+        return productRepository.findAll(pageable);               // findAll expects Pageable
     }
+
 
     public Product getProduct(Integer id) {
         Optional<Product> productOptional = productRepository.findById(id);
@@ -50,15 +62,27 @@ public class ProductService {
     }
 
     // TODO: Method to search products by name
+    public List<Product> searchByName(String name){
+    	return productRepository.findByname(name);
+    }
 
 
     // TODO: Method to filter products by category
+    public List<Product> filtebycategory(String category){
+    	return productRepository.findByCategory(category);
+    }
 
 
     // TODO: Method to filter products by price range
+    public List<Product> filterbyPrice(Double minPrice,Double maxPrice){
+    	 return productRepository.findByPriceBetween(minPrice, maxPrice);
+    }
 
 
     // TODO: Method to filter products by stock quantity range
+    public List<Product> filterByStockPrice(Integer minStock,Integer maxStock){
+    	return productRepository.findByStockQuantityBetween(minStock, maxStock);
+    }
 
 
 }

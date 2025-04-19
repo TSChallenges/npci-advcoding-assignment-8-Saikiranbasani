@@ -2,19 +2,30 @@ package com.mystore.app.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Product {
 
     @Id
     private Integer id;
-
+    @NotBlank
+    @NotNull
+    @NotEmpty
     private String name;
-
+    @NotBlank
+    @NotNull
+    @NotEmpty
     private String category;
-
+    @Min(value=100,message="Please don't add any product with price lesser than 100")
+    @Max(value=50000,message="This platform doesn't allow high priced products. Prices must be <= 50000")
     private Double price;
-
+    @Min(value=10)
+    @Max(value=500)
     private Integer stockQuantity;
 
     public Product() {
